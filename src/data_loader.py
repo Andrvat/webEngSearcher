@@ -30,6 +30,7 @@ class DataLoader:
         self.limit = limit
 
     def load_subtitles_from(self, base_url):
+        print('Data loading...', file=sys.stderr)
         for video_id in tqdm(range(1, self.limit)):
             try:
                 url = base_url.replace('?', str(video_id), 1)
