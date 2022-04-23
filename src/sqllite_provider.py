@@ -3,9 +3,17 @@ import sqlite3
 from pathlib import Path
 
 
+def dict_factory(cursor, row):
+    dictionary = {}
+    for idx, col in enumerate(cursor.description):
+        dictionary[col[0]] = row[idx]
+    return dictionary
+
+
 class SqlLiteProvider:
     def __init__(self, db_filename):
         self.connection = sqlite3.connect(db_filename)
+        self.connection.row_factory = dict_factory
         self.cursor = self.connection.cursor()
         self.verify_schema()
 
@@ -23,6 +31,9 @@ class SqlLiteProvider:
             VALUES (?, ?, ?, ?, ?)
             """, data)
         self.connection.commit()
+
+    def get_query_result(self, query):
+        return self.connection.execute(query).fetchall()
 
     def close(self):
         self.connection.close()
