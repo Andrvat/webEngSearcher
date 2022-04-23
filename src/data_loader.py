@@ -53,7 +53,10 @@ class DataLoader:
     def load_titles_from(self, base_url):
         print('Video titles loading...', file=sys.stderr)
         for video_id in tqdm(range(1, self.limit)):
-            url = base_url.replace('?', str(video_id), 1)
-            with urlopen(url) as page:
-                self.provider.insert_titles(table_name=self.where['titles'],
-                                            data=[video_id, get_parsed_title(page.url)])
+            try:
+                url = base_url.replace('?', str(video_id), 1)
+                with urlopen(url) as page:
+                    self.provider.insert_titles(table_name=self.where['titles'],
+                                                data=[video_id, get_parsed_title(page.url)])
+            except HTTPError as e:
+                continue
