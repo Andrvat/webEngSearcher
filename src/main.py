@@ -13,5 +13,6 @@ if __name__ == "__main__":
         data_loader.load_subtitles_from('https://www.ted.com/talks/subtitles/id/?/lang/?')
 
     explorer = UsageExplorer(provider=provider)
-    print(explorer.get_usage("Andrew"))
+    for x in explorer.get_usage("Andrew"):
+        print(x)
     provider.close()

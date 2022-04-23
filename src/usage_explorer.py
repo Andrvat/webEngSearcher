@@ -3,7 +3,7 @@ class UsageExplorer:
         self.provider = provider
 
     def get_usage(self, text):
-        self.provider.get_query_result(
+        return self.provider.get_query_result(
             f"""
             SELECT * FROM contents
             WHERE content LIKE '% {text} %'
