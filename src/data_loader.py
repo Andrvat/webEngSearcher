@@ -22,15 +22,21 @@ def get_parsed_subtitles(json_data, video_id):
     return data
 
 
+def get_parsed_title(url_title):
+    title = url_title.split('/')[-1]
+    return title.replace('_', ' ')
+
+
 class DataLoader:
-    def __init__(self, provider, where='contents', lang='en', limit=100):
+    def __init__(self, provider, lang='en', limit=100):
         self.provider = provider
-        self.where = where
+        self.where = {'contents': 'contents',
+                      'titles': 'titles'}
         self.lang = lang
         self.limit = limit
 
     def load_subtitles_from(self, base_url):
-        print('Data loading...', file=sys.stderr)
+        print('Subtitles loading...', file=sys.stderr)
         for video_id in tqdm(range(1, self.limit)):
             try:
                 url = base_url.replace('?', str(video_id), 1)
@@ -38,8 +44,16 @@ class DataLoader:
                 with urlopen(url) as page:
                     data = get_parsed_subtitles(
                         json_data=page.read().decode('utf-8'), video_id=video_id)
-                    self.provider.insert_data(table_name=self.where, data=data)
+                    self.provider.insert_subtitles(table_name=self.where['contents'], data=data)
             except HTTPError as e:
                 if e.code == TOO_MANY_REQUESTS:
                     time.sleep(5)
                 continue
+
+    def load_titles_from(self, base_url):
+        print('Video titles loading...', file=sys.stderr)
+        for video_id in tqdm(range(1, self.limit)):
+            url = base_url.replace('?', str(video_id), 1)
+            with urlopen(url) as page:
+                self.provider.insert_titles(table_name=self.where['titles'],
+                                            data=[video_id, get_parsed_title(page.url)])

@@ -24,11 +24,19 @@ class SqlLiteProvider:
                 self.cursor.execute(query.read())
         self.connection.commit()
 
-    def insert_data(self, table_name, data):
+    def insert_subtitles(self, table_name, data):
         self.cursor.executemany(
             f"""
             INSERT OR IGNORE INTO {table_name}
             VALUES (?, ?, ?, ?, ?)
+            """, data)
+        self.connection.commit()
+
+    def insert_titles(self, table_name, data):
+        self.cursor.execute(
+            f"""
+            INSERT OR IGNORE INTO {table_name}
+            VALUES (?, ?)
             """, data)
         self.connection.commit()
 
