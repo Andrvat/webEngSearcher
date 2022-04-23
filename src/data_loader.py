@@ -1,9 +1,12 @@
 import json
 import sys
+import time
 from sqlite3 import IntegrityError
 from urllib.error import HTTPError
 from urllib.request import urlopen
 from tqdm import tqdm
+
+TOO_MANY_REQUESTS = 429
 
 
 def get_parsed_subtitles(json_data, video_id):
@@ -21,7 +24,7 @@ def get_parsed_subtitles(json_data, video_id):
 
 
 class DataLoader:
-    def __init__(self, provider, where='contents', lang='en', limit=3000):
+    def __init__(self, provider, where='contents', lang='en', limit=100):
         self.provider = provider
         self.where = where
         self.lang = lang
@@ -36,6 +39,7 @@ class DataLoader:
                     data = get_parsed_subtitles(json_data=page.read().decode('utf-8'),
                                                 video_id=video_id)
                     self.provider.insert_data(table_name=self.where, data=data)
-            except (IntegrityError, HTTPError) as e:
-                print(e, file=sys.stderr)
+            except HTTPError as e:
+                if e.code == TOO_MANY_REQUESTS:
+                    time.sleep(5)
                 continue
