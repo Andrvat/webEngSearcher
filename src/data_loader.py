@@ -30,16 +30,17 @@ def get_parsed_subtitles(json_data, video_id):
 
 def get_parsed_title(url_title):
     title = url_title.split('/')[-1]
-    return title.replace('_', ' ')
+    return title.replace('_', ' ').title()
 
 
 class DataLoader:
     def __init__(self, provider, lang='en', limit=100):
         self.provider = provider
         self.where = {'contents': 'contents',
-                      'titles': 'titles'}
+                      'titles': 'titles',
+                      'audios': 'src/static/'}
         self.lang = lang
-        self.limit = limit
+        self.limit = limit + 1
 
     def load_subtitles_from(self, base_url):
         print('Subtitles loading...', file=sys.stderr)
@@ -66,7 +67,7 @@ class DataLoader:
                 with urlopen(url) as page:
                     self.provider.insert_titles(table_name=self.where['titles'],
                                                 data=[video_id, get_parsed_title(page.url)])
-            except HTTPError:
+            except HTTPError as e:
                 print(e, file=sys.stderr)
                 continue
 
@@ -82,7 +83,7 @@ class DataLoader:
                     if '.mp4' in url:
                         urllib.request.urlretrieve(url[:-1], 'tmp.mp4')
                         clip = mp.VideoFileClip("tmp.mp4")
-                        clip.audio.write_audiofile(f"resources/{video_id}.mp3")
+                        clip.audio.write_audiofile(f"{self.where['audios']}{video_id}.mp3")
                         os.remove('tmp.mp4')
             except HTTPError as e:
                 print(e, file=sys.stderr)

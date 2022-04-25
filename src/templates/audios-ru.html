@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Happy English Part: результаты поиска</title>
+</head>
+<body>
+<h1 style="text-align:center">Фраза: {{text}}</h1>
+<table align="center">
+    {% for dictionary in data %}
+    <tr>
+        <td>
+            <p></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3 style="text-align:center">Эпизод № {{dictionary['episode_no']}}</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>{{dictionary['video_title']}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <audio controls>
+                <source src="/static/{{dictionary['video_id']}}.mp3#t={{dictionary['hours']}}:{{dictionary['minutes']}}:{{dictionary['seconds']}}"
+                        type="audio/mp3">
+            </audio>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p></p>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -3,7 +3,6 @@ import argparse
 
 class ArgvParser:
     def __init__(self):
-        # https://stackoverflow.com/questions/15008758/parsing-boolean-values-with-argparse
         self.parser = argparse.ArgumentParser(description='Happy English Part')
         self.parser.add_argument('--dbname',
                                  type=str,

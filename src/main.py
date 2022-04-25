@@ -2,7 +2,7 @@ from sqllite_provider import SqlLiteProvider
 from data_loader import DataLoader
 from usage_explorer import UsageExplorer
 from argv_parser import ArgvParser
-from web_view import AppView
+from app_view import AppView
 
 if __name__ == "__main__":
     parser = ArgvParser()
@@ -19,4 +19,5 @@ if __name__ == "__main__":
 
     app = AppView(explorer=explorer)
     app.run()
+
     provider.close()
