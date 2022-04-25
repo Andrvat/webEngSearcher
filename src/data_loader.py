@@ -1,9 +1,15 @@
 import json
+import os
 import sys
 import time
+import urllib
+import moviepy.editor as mp
 from urllib.error import HTTPError
 from urllib.request import urlopen
+
+import requests
 from tqdm import tqdm
+from urlextract import URLExtract
 
 TOO_MANY_REQUESTS = 429
 
@@ -58,5 +64,23 @@ class DataLoader:
                 with urlopen(url) as page:
                     self.provider.insert_titles(table_name=self.where['titles'],
                                                 data=[video_id, get_parsed_title(page.url)])
+            except HTTPError:
+                continue
+
+    def load_audios_from(self, base_url):
+        print('Video audio records loading...', file=sys.stderr)
+        for video_id in tqdm(range(1, self.limit)):
+            try:
+                url = base_url.replace('?', str(video_id), 1)
+                response = requests.get(url)
+                extractor = URLExtract()
+                urls = extractor.find_urls(response.text)
+                for url in urls:
+                    if '.mp4' in url:
+                        urllib.request.urlretrieve(url[:-1], 'tmp.mp4')
+                        clip = mp.VideoFileClip("tmp.mp4")
+                        clip.audio.write_audiofile(f"resources/{video_id}.mp3")
+                        os.remove('tmp.mp4')
             except HTTPError as e:
+                print(e, file=sys.stderr)
                 continue
