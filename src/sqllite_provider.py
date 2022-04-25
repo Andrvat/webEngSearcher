@@ -12,7 +12,7 @@ def dict_factory(cursor, row):
 
 class SqlLiteProvider:
     def __init__(self, db_filename):
-        self.connection = sqlite3.connect(db_filename)
+        self.connection = sqlite3.connect(db_filename, check_same_thread=False)
         self.connection.row_factory = dict_factory
         self.cursor = self.connection.cursor()
         self.verify_schema()

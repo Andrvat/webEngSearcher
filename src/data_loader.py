@@ -54,6 +54,8 @@ class DataLoader:
             except HTTPError as e:
                 if e.code == TOO_MANY_REQUESTS:
                     time.sleep(5)
+                else:
+                    print(e, file=sys.stderr)
                 continue
 
     def load_titles_from(self, base_url):
@@ -65,6 +67,7 @@ class DataLoader:
                     self.provider.insert_titles(table_name=self.where['titles'],
                                                 data=[video_id, get_parsed_title(page.url)])
             except HTTPError:
+                print(e, file=sys.stderr)
                 continue
 
     def load_audios_from(self, base_url):
