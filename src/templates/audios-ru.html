@@ -20,12 +20,12 @@
     </tr>
     <tr>
         <td>
-            <p>{{dictionary['video_title']}}</p>
+            <p style="text-align:center">{{dictionary['video_title']}}</p>
         </td>
     </tr>
     <tr>
         <td>
-            <audio controls>
+            <audio controls style="margin: 0 auto; display: block;">
                 <source src="/static/{{dictionary['video_id']}}.mp3#t={{dictionary['hours']}}:{{dictionary['minutes']}}:{{dictionary['seconds']}}"
                         type="audio/mp3">
             </audio>
