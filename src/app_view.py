@@ -23,8 +23,6 @@ class AppView:
         def post_index():
             text = request.form['text']
             usages = self.explorer.get_usage(text)
-            for x in usages:
-                print(x)
             return render_template(f"audios-{self.best_lang}.html", data=usages, text=text)
 
         self.app.run()

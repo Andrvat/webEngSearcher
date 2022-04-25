@@ -10,10 +10,10 @@ if __name__ == "__main__":
     provider = SqlLiteProvider(db_filename=args.dbname)
 
     if args.update:
-        data_loader = DataLoader(provider=provider, limit=5)
-        data_loader.load_audios_from('https://www.ted.com/talks/?')
+        data_loader = DataLoader(provider=provider, limit=50)
         data_loader.load_titles_from('https://www.ted.com/talks/?')
         data_loader.load_subtitles_from('https://www.ted.com/talks/subtitles/id/?/lang/?')
+        data_loader.load_audios_from('https://www.ted.com/talks/?')
 
     explorer = UsageExplorer(provider=provider)
 
