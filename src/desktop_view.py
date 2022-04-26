@@ -10,6 +10,7 @@ from kivy.uix.textinput import TextInput
 class InputScreen(Screen):
     def __init__(self, **kwargs):
         super(InputScreen, self).__init__(**kwargs)
+        self.receiver = None
 
         self.color_code = '#79FF8F'
         self.size_hint = (1, 0.7)
@@ -44,15 +45,42 @@ class InputScreen(Screen):
         self.add_widget(self.main)
 
     def callback(self, instance):
-        self.question.text = "Hello " + self.input.text + "!"
+        self.receiver.set_phrase(self.input.text)
+        self.parent.current = 'audios'
+
+    def set_data_receiver(self, receiver):
+        self.receiver = receiver
+
+
+class AudiosScreen(Screen):
+    def __init__(self, **kwargs):
+        super(AudiosScreen, self).__init__(**kwargs)
+        self.source = None
+        self.phrase = None
+        self.intro = None
+
+    def set_data_source(self, source):
+        self.source = source
+
+    def set_phrase(self, phrase):
+        self.phrase = phrase
+        if self.intro is not None:
+            self.remove_widget(self.intro)
+        self.intro = Label(text=self.phrase)
+        self.add_widget(self.intro)
 
 
 class DesktopApp(App):
     def build(self):
         manager = ScreenManager()
         input_screen = InputScreen(name='input')
+        audios_screen = AudiosScreen(name='audios')
+
+        audios_screen.set_data_source(input_screen)
+        input_screen.set_data_receiver(audios_screen)
 
         manager.add_widget(input_screen)
+        manager.add_widget(audios_screen)
         return manager
 
 
