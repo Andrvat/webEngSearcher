@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template
 
 
-class AppView:
+class WebView:
     def __init__(self, explorer):
         self.supported_langs = ['ru', 'en']
         self.explorer = explorer
