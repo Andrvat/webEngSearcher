@@ -1,8 +1,9 @@
 from kivy.app import App
+from kivy.core.audio import SoundLoader
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
-from kivy.uix.image import Image
 from kivy.uix.button import Button
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.textinput import TextInput
 
@@ -46,6 +47,7 @@ class InputScreen(Screen):
 
     def callback(self, instance):
         self.receiver.set_phrase(self.input.text)
+        self.receiver.create()
         self.parent.current = 'audios'
 
     def set_data_receiver(self, receiver):
@@ -55,6 +57,7 @@ class InputScreen(Screen):
 class AudiosScreen(Screen):
     def __init__(self, **kwargs):
         super(AudiosScreen, self).__init__(**kwargs)
+        self.sound = None
         self.source = None
         self.phrase = None
         self.intro = None
@@ -64,10 +67,42 @@ class AudiosScreen(Screen):
 
     def set_phrase(self, phrase):
         self.phrase = phrase
-        if self.intro is not None:
-            self.remove_widget(self.intro)
-        self.intro = Label(text=self.phrase)
-        self.add_widget(self.intro)
+
+    def create(self):
+        layout = RelativeLayout()
+
+        self.sound = SoundLoader.load('static/1.wav')
+
+        source_label = Label(text=self.sound.source,
+                             pos_hint={'center_x': 0.5, 'center_y': 0.5}
+                             )
+        source_length = Label(text=str(self.sound.length),
+                              pos_hint={'center_x': 0.5, 'center_y': 0.4}
+                              )
+        layout.add_widget(source_label)
+        layout.add_widget(source_length)
+
+        play_button = Button(text='play',
+                             size_hint=(.1, .1),
+                             pos_hint={'center_x': 0.4, 'center_y': 0.3},
+                             on_press=self.playaudio
+                             )
+        stop_button = Button(text='stop',
+                             size_hint=(.1, .1),
+                             pos_hint={'center_x': 0.6, 'center_y': 0.3},
+                             on_press=self.stopaudio
+                             )
+        layout.add_widget(play_button)
+        layout.add_widget(stop_button)
+
+        self.add_widget(layout)
+
+    def playaudio(self, instance):
+        self.sound.play()
+
+
+    def stopaudio(self, instance):
+        self.sound.stop()
 
 
 class DesktopApp(App):
@@ -84,4 +119,5 @@ class DesktopApp(App):
         return manager
 
 
+# TODO: https://stackoverflow.com/questions/63882665/how-to-use-slider-as-progress-bar-and-control-audio-in-kivy-python
 DesktopApp().run()
