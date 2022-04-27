@@ -1,8 +1,3 @@
-import os
-
-os.environ["KIVY_AUDIO"] = "ffpyplayer"
-
-
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
@@ -125,6 +120,11 @@ class AudiosScreen(Screen):
 
 
 class DesktopApp(App):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Builder.load_file("static/audios.kv")
+        self.hi = 'hi'
+
     def build(self):
         manager = ScreenManager()
         input_screen = InputScreen(name='input')
@@ -137,7 +137,3 @@ class DesktopApp(App):
         manager.add_widget(audios_screen)
         return manager
 
-
-Builder.load_file("static/audios.kv")
-# TODO: https://stackoverflow.com/questions/63882665/how-to-use-slider-as-progress-bar-and-control-audio-in-kivy-python
-DesktopApp().run()

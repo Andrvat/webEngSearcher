@@ -1,8 +1,12 @@
+import os
+
+os.environ["KIVY_AUDIO"] = "ffpyplayer"
+os.environ['KIVY_NO_ARGS'] = "1"
+
 from sqllite_provider import SqlLiteProvider
 from data_loader import DataLoader
 from usage_explorer import UsageExplorer
 from argv_parser import ArgvParser
-from web_view import WebView
 
 if __name__ == "__main__":
     parser = ArgvParser()
@@ -17,7 +21,13 @@ if __name__ == "__main__":
 
     explorer = UsageExplorer(provider=provider)
 
-    app = WebView(explorer=explorer)
-    app.run()
+    match args.interface:
+        case 'web':
+            from web_view import WebView
+            app = WebView(explorer=explorer)
+            app.run()
+        case 'desktop':
+            from desktop_view import DesktopApp
+            DesktopApp().run()
 
     provider.close()
