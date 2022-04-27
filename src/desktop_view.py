@@ -69,37 +69,31 @@ class AudiosScreen(Screen):
         self.phrase = phrase
 
     def create(self):
-        layout = RelativeLayout()
+        layout = GridLayout()
+        layout.cols = 1
 
         self.sound = SoundLoader.load('static/1.wav')
+        self.widgets = []
+        for i in range(5):
+            self.widgets.append(Label(text=self.sound.source
+                                      ))
+            self.widgets.append(Label(text=str(self.sound.length)
+                                      ))
+            self.widgets.append(Button(text='play',
+                                       on_press=self.playaudio
+                                       ))
+            self.widgets.append(Button(text='stop',
+                                       on_press=self.stopaudio
+                                       ))
+            self.widgets.append(Label(text=' '))
 
-        source_label = Label(text=self.sound.source,
-                             pos_hint={'center_x': 0.5, 'center_y': 0.5}
-                             )
-        source_length = Label(text=str(self.sound.length),
-                              pos_hint={'center_x': 0.5, 'center_y': 0.4}
-                              )
-        layout.add_widget(source_label)
-        layout.add_widget(source_length)
-
-        play_button = Button(text='play',
-                             size_hint=(.1, .1),
-                             pos_hint={'center_x': 0.4, 'center_y': 0.3},
-                             on_press=self.playaudio
-                             )
-        stop_button = Button(text='stop',
-                             size_hint=(.1, .1),
-                             pos_hint={'center_x': 0.6, 'center_y': 0.3},
-                             on_press=self.stopaudio
-                             )
-        layout.add_widget(play_button)
-        layout.add_widget(stop_button)
+        for label in self.widgets:
+            layout.add_widget(label)
 
         self.add_widget(layout)
 
     def playaudio(self, instance):
         self.sound.play()
-
 
     def stopaudio(self, instance):
         self.sound.stop()
