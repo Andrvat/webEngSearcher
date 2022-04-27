@@ -1,4 +1,4 @@
-from converter import convertMillis
+from converter import convert_millis
 
 
 class UsageExplorer:
@@ -15,5 +15,5 @@ class UsageExplorer:
             """)
         res = []
         for i, record in enumerate(data):
-            res.append(record | convertMillis(record['start_time']) | {'episode_no': i + 1})
+            res.append(record | convert_millis(record['start_time']) | {'episode_no': i + 1})
         return res

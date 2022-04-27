@@ -1,7 +1,7 @@
 import math
 
 
-def convertMillis(millis):
+def convert_millis(millis):
     millis = int(millis)
     seconds = (millis / 1000) % 60
     seconds = int(seconds)
@@ -13,3 +13,7 @@ def convertMillis(millis):
         'minutes': str(minutes).rjust(2, '0'),
         'seconds': str(seconds).rjust(2, '0')
     }
+
+
+def convert_to_secs(hours, minutes, seconds):
+    return int(hours) * 3600 + int(minutes) * 60 + int(seconds)

@@ -6,7 +6,6 @@ import urllib
 import moviepy.editor as mp
 from urllib.error import HTTPError
 from urllib.request import urlopen
-
 import requests
 from tqdm import tqdm
 from urlextract import URLExtract
@@ -84,9 +83,10 @@ class DataLoader:
                 urls = extractor.find_urls(response.text)
                 for url in urls:
                     if '.mp4' in url:
+                        print(f"Download file {url}", file=sys.stderr)
                         urllib.request.urlretrieve(url[:-1], 'tmp.mp4')
                         clip = mp.VideoFileClip("tmp.mp4")
-                        clip.audio.write_audiofile(f"{self.where['audios']}{video_id}.wav", codec='pcm_s16le')
+                        clip.audio.write_audiofile(f"{self.where['audios']}{video_id}.ogg")
                         os.remove('tmp.mp4')
             except HTTPError as e:
                 if e.code == TOO_MANY_REQUESTS:

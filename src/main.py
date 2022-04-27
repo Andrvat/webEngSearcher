@@ -1,12 +1,11 @@
-import os
-
-os.environ["KIVY_AUDIO"] = "ffpyplayer"
-os.environ['KIVY_NO_ARGS'] = "1"
-
 from sqllite_provider import SqlLiteProvider
 from data_loader import DataLoader
 from usage_explorer import UsageExplorer
 from argv_parser import ArgvParser
+import os
+
+os.environ["KIVY_AUDIO"] = "ffpyplayer"
+os.environ['KIVY_NO_ARGS'] = "1"
 
 if __name__ == "__main__":
     parser = ArgvParser()
@@ -14,20 +13,22 @@ if __name__ == "__main__":
     provider = SqlLiteProvider(db_filename=args.dbname)
 
     if args.update:
-        data_loader = DataLoader(provider=provider, limit=50)
+        data_loader = DataLoader(provider, limit=10)
         data_loader.load_titles_from('https://www.ted.com/talks/?')
         data_loader.load_subtitles_from('https://www.ted.com/talks/subtitles/id/?/lang/?')
         data_loader.load_audios_from('https://www.ted.com/talks/?')
 
-    explorer = UsageExplorer(provider=provider)
+    explorer = UsageExplorer(provider)
 
     match args.interface:
         case 'web':
             from web_view import WebView
-            app = WebView(explorer=explorer)
+
+            app = WebView(explorer)
             app.run()
         case 'desktop':
             from desktop_view import DesktopApp
-            DesktopApp().run()
+
+            DesktopApp(explorer).run()
 
     provider.close()
