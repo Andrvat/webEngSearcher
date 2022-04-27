@@ -1,0 +1,17 @@
+#:kivy 1.10.0
+
+<AppScreenManager>:
+    AudiosScreen:
+
+<AudiosScreen>:
+    view: view
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            size: (64, 64)
+            size_hint: (1, None)
+
+        ScrollView:
+            id: view

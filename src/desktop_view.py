@@ -1,10 +1,15 @@
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
+from kivy.lang import Builder
+from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 
 
@@ -47,7 +52,7 @@ class InputScreen(Screen):
 
     def callback(self, instance):
         self.receiver.set_phrase(self.input.text)
-        self.receiver.create()
+        self.receiver.prepare()
         self.parent.current = 'audios'
 
     def set_data_receiver(self, receiver):
@@ -55,12 +60,43 @@ class InputScreen(Screen):
 
 
 class AudiosScreen(Screen):
+    view = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super(AudiosScreen, self).__init__(**kwargs)
+        self.widgets = None
+        self.color_code = '#79FF8F'
         self.sound = None
         self.source = None
         self.phrase = None
-        self.intro = None
+
+    def prepare(self):
+        self.layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.layout.bind(minimum_height=self.layout.setter("height"))
+
+        self.sound = SoundLoader.load('static/1.wav')
+
+        for _ in range(20):
+            self.build_label(text=self.sound.source, padding=2)
+            self.build_label(text=self.phrase, padding=2)
+            self.layout.add_widget(Button(text='play',
+                                          size=(50, 50),
+                                          on_press=self.playaudio,
+                                          size_hint=(1, None),
+                                          bold=True,
+                                          background_color=self.color_code,
+                                          ))
+            self.layout.add_widget(Button(text='stop',
+                                          size=(50, 50),
+                                          on_press=self.stopaudio,
+                                          size_hint=(1, None),
+                                          bold=True,
+                                          background_color=self.color_code,
+                                          ))
+            self.build_label(text='', padding=6)
+        scroll = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
+        scroll.add_widget(self.layout)
+        self.view.add_widget(scroll)
 
     def set_data_source(self, source):
         self.source = source
@@ -68,36 +104,16 @@ class AudiosScreen(Screen):
     def set_phrase(self, phrase):
         self.phrase = phrase
 
-    def create(self):
-        layout = GridLayout()
-        layout.cols = 1
-
-        self.sound = SoundLoader.load('static/1.wav')
-        self.widgets = []
-        for i in range(5):
-            self.widgets.append(Label(text=self.sound.source
-                                      ))
-            self.widgets.append(Label(text=str(self.sound.length)
-                                      ))
-            self.widgets.append(Button(text='play',
-                                       on_press=self.playaudio
-                                       ))
-            self.widgets.append(Button(text='stop',
-                                       on_press=self.stopaudio
-                                       ))
-            self.widgets.append(Label(text=' '))
-
-        for label in self.widgets:
-            layout.add_widget(label)
-
-        self.add_widget(layout)
-
     def playaudio(self, instance):
         self.sound.play()
 
     def stopaudio(self, instance):
         self.sound.stop()
 
+    def build_label(self, text, padding):
+        self.layout.add_widget(Label(text=text))
+        for _ in range(padding):
+            self.layout.add_widget(Label(text=''))
 
 class DesktopApp(App):
     def build(self):
@@ -113,5 +129,6 @@ class DesktopApp(App):
         return manager
 
 
+Builder.load_file("static/audios.kv")
 # TODO: https://stackoverflow.com/questions/63882665/how-to-use-slider-as-progress-bar-and-control-audio-in-kivy-python
 DesktopApp().run()
