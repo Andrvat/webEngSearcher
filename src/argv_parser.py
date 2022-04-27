@@ -12,6 +12,9 @@ class ArgvParser:
                                  action=argparse.BooleanOptionalAction,
                                  help='Is needed to make requests for data uploading (long loading is possible)',
                                  required=True)
+        self.parser.add_argument('--limit',
+                                 help='Limit of downloading audio tracks from TED videos',
+                                 required=True)
         self.parser.add_argument('--interface',
                                  choices=['web', 'desktop'],
                                  default='web',
