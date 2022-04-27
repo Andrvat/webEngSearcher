@@ -1,3 +1,8 @@
+import os
+
+os.environ["KIVY_AUDIO"] = "ffpyplayer"
+
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
@@ -107,6 +112,7 @@ class AudiosScreen(Screen):
         self.phrase = phrase
 
     def playaudio(self, instance):
+        self.sound.seek(100)
         self.sound.play()
 
     def stopaudio(self, instance):
