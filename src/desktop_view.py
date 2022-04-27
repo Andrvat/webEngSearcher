@@ -64,19 +64,21 @@ class AudiosScreen(Screen):
 
     def __init__(self, **kwargs):
         super(AudiosScreen, self).__init__(**kwargs)
-        self.widgets = None
+        self.layout = None
         self.color_code = '#79FF8F'
         self.sound = None
         self.source = None
         self.phrase = None
 
     def prepare(self):
+        self.ids.intro_label.text = f'Your phrase: {self.phrase}'
         self.layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
         self.layout.bind(minimum_height=self.layout.setter("height"))
 
         self.sound = SoundLoader.load('static/1.wav')
 
         for _ in range(20):
+            self.build_label(text='', padding=2)
             self.build_label(text=self.sound.source, padding=2)
             self.build_label(text=self.phrase, padding=2)
             self.layout.add_widget(Button(text='play',
@@ -114,6 +116,7 @@ class AudiosScreen(Screen):
         self.layout.add_widget(Label(text=text))
         for _ in range(padding):
             self.layout.add_widget(Label(text=''))
+
 
 class DesktopApp(App):
     def build(self):

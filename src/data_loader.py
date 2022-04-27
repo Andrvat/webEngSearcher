@@ -86,7 +86,7 @@ class DataLoader:
                     if '.mp4' in url:
                         urllib.request.urlretrieve(url[:-1], 'tmp.mp4')
                         clip = mp.VideoFileClip("tmp.mp4")
-                        clip.audio.write_audiofile(f"{self.where['audios']}{video_id}.mp3")
+                        clip.audio.write_audiofile(f"{self.where['audios']}{video_id}.wav", codec='pcm_s16le')
                         os.remove('tmp.mp4')
             except HTTPError as e:
                 if e.code == TOO_MANY_REQUESTS:
