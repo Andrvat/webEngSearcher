@@ -9,9 +9,8 @@ class ArgvParser:
                                  help='SqlLite database filename',
                                  required=True)
         self.parser.add_argument('--update',
-                                 default=True,
                                  action=argparse.BooleanOptionalAction,
-                                 help='Is needed to make requests for data uploading',
+                                 help='Is needed to make requests for data uploading (long loading is possible)',
                                  required=True)
         self.parser.add_argument('--interface',
                                  choices=['web', 'desktop'],
